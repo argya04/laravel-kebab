@@ -17,10 +17,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Awal Routes pada controller Home
-Route::get('/', [HomeController::class, 'daftarMenu']);
-Route::get('/daftarMenu', [HomeController::class, 'daftarMenu']);
-Route::get('/buatPesanan', [HomeController::class, 'buatPesanan']);
-Route::get('/cekstatusPesanan', [HomeController::class, 'cekstatusPesanan']);
+Route::get('/', [HomeController::class, 'daftarMenu'])->name('pelanggan.daftarMenu');
+Route::get('/daftarMenu', [HomeController::class, 'daftarMenu'])->name('pelanggan.daftarMenu');
+Route::get('/buatPesanan', [HomeController::class, 'buatPesanan'])->name('pelanggan.buatPesanan');
+Route::post('/simpanPesanan', [HomeController::class, 'simpanPesanan'])->name('pelanggan.simpanPesanan');
+Route::get('/cekstatusPesanan', [HomeController::class, 'cekstatusPesanan'])->name('pelanggan.cekstatusPesanan');
 // Akhir Routes pada controller Home
 
 

@@ -55,13 +55,13 @@
             <div class="collapse navbar-collapse" id="navbarMenu" >
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a href="{{ url('/daftarMenu') }}" class="nav-link link-light">Daftar Menu</a>
+                        <a href="{{ route('pelanggan.daftarMenu') }}" class="nav-link link-light">Daftar Menu</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ url('/buatPesanan') }}" class="nav-link link-light">Buat Pesanan</a>
+                        <a href="{{ route('pelanggan.buatPesanan') }}" class="nav-link link-light">Buat Pesanan</a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ url('/cekstatusPesanan') }}" class="nav-link link-light">Status Pesanan</a>
+                        <a href="{{ route('pelanggan.cekstatusPesanan') }}" class="nav-link link-light">Status Pesanan</a>
                     </li>
                 </ul>
             </div>
@@ -69,7 +69,54 @@
     </nav>
 
     @yield('page-content')
-
+    
+    <!-- jQuery -->
+    <script src="{{ asset('/') }}asset/templatepenjual/plugins/jquery/jquery.min.js"></script>
     <script src="{{ asset('/') }}asset/js/bootstrap.min.js"></script>
+
+    {{-- Awal Script tambah menu baru --}}
+    <script>
+        var i = 0;
+        $('#add').click(function(){
+            ++i;
+            $('#formmultiMenu').append(
+                `<div class="d-flex flex-row gap-3 delete">
+                    <select class="form-select @error('frmMenu')is-invalid @enderror" id="menu" name="frmMenu[`+i+`][id_menu]">
+                        <option value="" selected disabled>--Pilih Menu--</option>        
+                        @foreach ($dataMenu as $item)                  
+                            <option value="{{$item->id_menu}}" {{ (old("frmMenu") == $item->id_menu ? "selected":"") }}>{{$item->nama_menu}}</option>
+                        @endforeach
+                    </select>
+
+                    @error('frmMenu')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                    @enderror
+
+                   <input type="number" name="frmQty[`+i+`][qty]" class="form-control text-center p-0 m-0 w-25 @error('frmQty')is-invalid @enderror" id="jumlah" placeholder="qty">
+                    @error('frmQty')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                    @enderror
+
+                    <button class="btn btn-danger p-2 btnhapus">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                           <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                           <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                        </svg>
+                    </button>
+                </div>`             
+            );
+        });
+
+        $(document).on('click',	'.btnhapus', function(){
+            $(this).parents('.delete').remove();
+        });
+    </script>
+    {{-- Akhir Script tambah menu baru --}}
+
+    
 </body>
 </html>
