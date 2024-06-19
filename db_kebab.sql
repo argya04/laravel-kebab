@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 18, 2024 at 06:26 AM
+-- Generation Time: Jun 20, 2024 at 01:12 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -101,8 +101,21 @@ CREATE TABLE `tb_detailpesanan` (
   `id_pesanan` int(11) NOT NULL,
   `id_menu` int(11) NOT NULL,
   `qty` int(11) NOT NULL,
-  `harga_jual` int(11) NOT NULL
+  `harga_jual` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tb_detailpesanan`
+--
+
+INSERT INTO `tb_detailpesanan` (`id_pesanan`, `id_menu`, `qty`, `harga_jual`) VALUES
+(1, 3, 2, 16000),
+(1, 2, 2, 13000),
+(1, 3, 1, 16000),
+(2, 2, 3, 13000),
+(2, 5, 3, 10000),
+(3, 4, 4, 8000),
+(3, 3, 2, 16000);
 
 -- --------------------------------------------------------
 
@@ -141,10 +154,19 @@ CREATE TABLE `tb_pesanan` (
   `tgl_pesanan` datetime NOT NULL,
   `nama_pelanggan` varchar(30) NOT NULL,
   `catatan_pesanan` text NOT NULL,
-  `jenis_pembayaran` enum('cash','transfer') NOT NULL,
-  `total_pembayaran` int(11) NOT NULL,
-  `status_pesanan` enum('persiapan','proses','selesai','diterima') NOT NULL
+  `jenis_pembayaran` enum('cash','qris') NOT NULL,
+  `total_pembayaran` int(11) DEFAULT NULL,
+  `status_pesanan` enum('persiapan','diproses','selesai','diterima') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tb_pesanan`
+--
+
+INSERT INTO `tb_pesanan` (`id_pesanan`, `tgl_pesanan`, `nama_pelanggan`, `catatan_pesanan`, `jenis_pembayaran`, `total_pembayaran`, `status_pesanan`) VALUES
+(1, '2024-06-20 05:57:21', 'sasd', 'gak pedes ya', 'cash', 74000, 'persiapan'),
+(2, '2024-06-20 06:02:56', 'Andi', 'gk pedes bro', 'qris', 69000, 'persiapan'),
+(3, '2024-06-20 06:07:05', 'Dea Afrizal', 'sedeng aje', 'cash', 64000, 'diterima');
 
 -- --------------------------------------------------------
 
@@ -257,7 +279,13 @@ ALTER TABLE `personal_access_tokens`
 -- AUTO_INCREMENT for table `tb_menu`
 --
 ALTER TABLE `tb_menu`
-  MODIFY `id_menu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_menu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT for table `tb_pesanan`
+--
+ALTER TABLE `tb_pesanan`
+  MODIFY `id_pesanan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `users`
