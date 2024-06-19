@@ -6,6 +6,8 @@ use App\Models\DetailPesanan;
 use Illuminate\Http\Request;
 use App\Models\Menu;
 use App\Models\Pesanan;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -25,48 +27,74 @@ class HomeController extends Controller
 
     public function simpanPesanan(Request $request)
     {
+
+        // $getharga = DB::table('tb_detailpesanan')
+        //     ->join('tb_pesanan', 'tb_detailpesanan.id_pesanan', '=', 'tb_pesanan.id_pesanan')
+        //     ->join('tb_menu', 'tb_detailpesanan.id_menu', '=', 'tb_menu.id_menu')
+        //     ->select('tb_detailpesanan.*', 'tb_pesanan.total_pembayaran', 'tb_menu.harga_menu')
+        //     ->get();
+
         // rule validasi form
         $request->validate([
-               'frmUsername' =>'required',
-               'frmPassword' =>'required',
-               'frmNamaLengkap' =>'required',
-               'frmTglLahir' =>'required',
-               'frmAlamat' =>'required',
-               'frmnoTelepon' =>'required',
-               'frmRole' =>'required',
+               'frmNama' =>'required',
+            //    'input.*.id_menu' =>'required',
+            //    'input.*.qty' =>'required|min:1',
+               'frmCatatan' =>'required',
+               'frmPembayaran' =>'required',
             ],
             [
-                'frmUsername.required' =>'Username harus diisi',
-                'frmPassword.required' =>'Password menu harus diisi',
-                'frmNamaLengkap.required' =>'Nama Lengkap harus diisi',
-                'frmTglLahir.required' =>'Tanggal Lahir harus diisi',
-                'frmAlamat.required' =>'Alamat harus diisi',
-                'frmnoTelepon.required' =>'Nomor telepon  harus diisi',
-                'frmRole.required' =>'Role harus diisi',
+                'frmNama.required' =>'Nama harus diisi',
+                // 'input.*.id_menu.required' =>' Menu tidak boleh kosong, silahkan pilih menu',
+                // 'input.*.qty.required' =>'Quantity pesanan tidak boleh kosong',
+                // 'input.*.qty.min' =>'Quantity minimal adalah 1',
+                'frmCatatan.required' =>'Catatan pesanan harus diisi. jika tidak ada catatan ketik tidak ada',
+                'frmPembayaran.required' =>'Jenis pembayaran harus diisi',
             ]
         );
 
-        // fungsi mengambil inputan dari form dan simpan kedalam database
-        $data_penjual= [
-            'username' => $request->frmUsername,
-            'password' => $request->frmPassword,
-            'nama_lengkap' => $request->frmNamaLengkap,
-            'tgl_lahir' => $request->frmTglLahir,
-            'alamat' => $request->frmAlamat,
-            'no_telepon' => $request->frmnoTelepon,
-            'role' => $request->frmRole
+        $status_pesanan = 'persiapan';
+        // $total_bayar = $getharga->harga_menu;
+        $tglPesanan = now();
+
+        // fungsi mengambil inputan dari form dan simpan kedalam tabel pesanan
+        $data_pesanan= [
+            'tgl_pesanan' => $tglPesanan,
+            'nama_pelanggan' => $request->frmNama,
+            'catatan_pesanan' => $request->frmCatatan,
+            'jenis_pembayaran' => $request->frmPembayaran,
+            'total_pembayaran' => $request->frmTotalPembayaran,
+            'status_pesanan' => $status_pesanan
         ];
+        $pesanan = Pesanan::create($data_pesanan);
+        // Hitung total harga pesanan
+        $total_pembayaran = 0;
 
-        Pesanan::create($data_penjual);
-        DetailPesanan::create($data_penjual);
+        // fungsi mengambil inputan dari add more dan simpan kedalam tabel detail_pesanan
+        foreach ($request->input('input') as $key => $value) {
+            // Ambil harga menu berdasarkan id_menu dari input
+            $menu = Menu::findOrFail($value['id_menu']);
+            $harga_menu = $menu->harga_menu;
 
-        return redirect('penjual/kelolaPenjual')->with('pesan', 'Data penjual berhasil ditambahkan');
+            DetailPesanan::create([
+                'id_pesanan' => $pesanan->id_pesanan,
+                'id_menu' => $value['id_menu'],
+                'qty' => $value['qty'],
+                'harga_jual' => $harga_menu, // Simpan harga dari menu yang dipilih
+            ]);
+
+             // Akumulasikan total harga
+            $total_pembayaran += $harga_menu * $value['qty'];
+        }
+        // Simpan total pembayaran ke dalam pesanan utama
+        $pesanan->update(['total_pembayaran' => $total_pembayaran]);
+
+        return redirect('/cekstatusPesanan')->with('pesan', 'Yeay pesanan kamu sudah tersimpan, mohon ditunggu yaa');
     }
 
     function cekstatusPesanan(){
 
-        
-        return view('pelanggan-page/cek_statuspesanan');
+        $dataMenu = Menu::get();
+        return view('pelanggan-page/cek_statuspesanan', compact('dataMenu'));
         
     }
 

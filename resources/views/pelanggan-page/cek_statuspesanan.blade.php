@@ -1,7 +1,12 @@
 @extends('pelanggan-page.navbar-layout.navbar')
 @section('page-content')
-
 <div class="container pt-3">
+    @if (session('pesan'))
+    <div class="alert alert-success alert-dismissible fade-show form-group" role="alert">
+      <strong>{{ session('pesan') }}</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  @endif
     <div class="row mt-4">
         <div class="col-7 col-md-6 col-lg-6 col-xl-5 offset-1 offset-md-2 offset-lg-2 offset-xl-3">
             <input class="form-control" type="search" placeholder="Masukkan ID Pesanan" aria-label="Search">

@@ -20,4 +20,10 @@ class Pesanan extends Model
         'total_pembayaran',
         'status_pesanan',
     ];
+
+    public function details()
+    {
+        return $this->hasMany(DetailPesanan::class, 'id_pesanan');
+    }
+    
 }

@@ -18,4 +18,6 @@ class Menu extends Model
         'foto_menu',
         'harga_menu'
     ];
+
+    
 }

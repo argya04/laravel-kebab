@@ -17,4 +17,14 @@ class DetailPesanan extends Model
         'qty',
         'harga_jual',
     ];
+
+    public function pesanan()
+    {
+        return $this->belongsTo(Pesanan::class, 'id_pesanan');
+    }
+
+    public function menu()
+    {
+        return $this->belongsTo(Menu::class, 'id_menu');
+    }
 }
